@@ -7,6 +7,7 @@ require('../auth/passport')(passport)
 router.use(passport.initialize())
 
 router.use('/users', require('./userRouter'))
+router.use('/cocktails', require('./cocktailRouter'))
 
 router.get('/', (req, res) => {
     res.send('Cocktail Index Server')
