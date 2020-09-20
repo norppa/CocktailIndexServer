@@ -1,38 +1,52 @@
 const level = require('level')
 
 const database = {
-    'test': level('./database/db/TestDB', { valueEncoding: 'json' })
+    'users': level('./database/db/UsersDB', { valueEncoding: 'json' })
 }
 
-const KEY = '@TEST'
-
-const setTest = async () => {
+const getUser = async (username) => {
+    console.log('getUser', username)
     try {
-        const value = await database.test.get(KEY)
-        const newValue = value + 1
-        await database.test.put(KEY, newValue)
+        return await database.users.get(username)
     } catch (error) {
         if (error.notFound) {
-            await database.test.put(KEY, 1)
+            return null
         }
     }
-    
 }
 
-const getTest = async () => {
-    try {
-        return await database.test.get(KEY)
-    } catch (error) {
-        if (error.notFound) {
-            return "Key not found"
-        }
+const putUser = async (userInfo) => {
+    console.log('setUser', userInfo)
+    const { username, salt, hash } = userInfo
+    if (!username || !salt || !hash) {
+        console.log('Can not store user with missing information')
+        return false
     }
+
+    await database.users.put(username, { username, salt, hash })
+    return true
+}
+
+const getAllUsers = () => {
+    return new Promise((resolve, reject) => {
+        const values = []
+        database.users.createKeyStream()
+            .on('data', (data) => {
+                values.push(data)
+            })
+            .on('close', () => resolve(values))
+            .on('error', (error) => {
+                console.log('error', error)
+                reject(error)
+            })
+    })
 }
 
 
 module.exports = {
-    'test': {
-        get: getTest,
-        set: setTest,
+    'users': {
+        get: getUser,
+        put: putUser,
+        all: getAllUsers
     }
 }

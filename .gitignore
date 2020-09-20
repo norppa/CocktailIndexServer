@@ -118,3 +118,6 @@ dist
 # Level Database
 database/db/*
 !database/db/.gitinclude
+
+# Encryption keys
+*.pem
