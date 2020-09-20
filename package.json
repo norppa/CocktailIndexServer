@@ -1,0 +1,26 @@
+{
+  "name": "cocktailindexserver",
+  "version": "0.1.0",
+  "description": "Cocktail Index Backend Server",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/norppa/CocktailIndexServer.git"
+  },
+  "author": "Jari Haavisto",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/norppa/CocktailIndexServer/issues"
+  },
+  "homepage": "https://github.com/norppa/CocktailIndexServer#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.4"
+  },
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
