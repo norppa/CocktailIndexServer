@@ -2,6 +2,7 @@ const jsonwebtoken = require('jsonwebtoken')
 const crypto = require('crypto')
 const fs = require('fs');
 const path = require('path')
+const passport = require('passport')
 
 const PRIVATE_KEY = fs.readFileSync(path.join(__dirname, './keys', 'ecdsa-p521-private.pem'), 'utf8')
 const PUBLIC_KEY = fs.readFileSync(path.join(__dirname, './keys', 'ecdsa-p521-public.pem'), 'utf8')
@@ -24,10 +25,23 @@ const passwordMatchesHash = (password, salt, hash) => {
     return crypto.pbkdf2Sync(password, salt, iterations, keylen, digest).toString('hex') === hash
 }
 
+const authenticate = passport.authenticate('jwt', { session: false })
+
+const isAdmin = (req, res, next) => {
+    console.log('req.user', req.user)
+    if (req.user && req.user.isAdmin) {
+        next()
+    } else {
+        res.status(401).send({ error: 'You need admin privileges for this endpoint'})
+    }
+}
+
 module.exports = {
     signToken,
     generateSaltAndHash,
     passwordMatchesHash,
     PRIVATE_KEY,
-    PUBLIC_KEY
+    PUBLIC_KEY,
+    authenticate,
+    isAdmin
 }

@@ -1,6 +1,6 @@
 const router = require('express').Router()
 const { users } = require('../database/level')
-const { signToken, generateSaltAndHash, passwordMatchesHash } = require('../auth/authUtils')
+const { signToken, generateSaltAndHash, passwordMatchesHash, authenticate, isAdmin } = require('../auth/authUtils')
 
 router.post('/login', async (req, res) => {
     const { username, password } = req.body
@@ -15,12 +15,12 @@ router.post('/login', async (req, res) => {
         return res.status(401).json({ error: 'Username not found' })
     }
 
-    const { hash, salt } = user
+    const { hash, salt, isAdmin } = user
     if (!passwordMatchesHash(password, salt, hash)) {
         return res.status(401).json({ error: 'Incorrect password' })
     }
 
-    const token = signToken({ username, iat: Date.now() })
+    const token = signToken({ username, isAdmin, iat: Date.now() })
     res.send(JSON.stringify({ token }))
 })
 
@@ -44,7 +44,7 @@ router.post('/register', async (req, res) => {
     res.send(JSON.stringify({ token }))
 })
 
-router.get('/all', async (req, res) => {
+router.get('/all', authenticate, isAdmin, async (req, res) => {
     const allUsers = await users.all()
     res.send(allUsers)
 })

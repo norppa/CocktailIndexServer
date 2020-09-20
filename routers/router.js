@@ -1,5 +1,10 @@
 const router = require('express').Router()
-const { test } = require('../database/level')
+const passport = require('passport')
+
+const {authenticate, isAdmin} = require('../auth/authUtils')
+
+require('../auth/passport')(passport)
+router.use(passport.initialize())
 
 router.use('/users', require('./userRouter'))
 
@@ -7,13 +12,11 @@ router.get('/', (req, res) => {
     res.send('Cocktail Index Server')
 })
 
-router.get('/dbgettest', async (req, res) => {
-    const value = await test.get()
-    res.send('Database value is ' + value)
+router.get('/auth', authenticate, async (req, res) => {
+    res.send('Authenticated endpoint')
 })
-router.get('/dbsettest', async (req, res) => {
-    await test.set()
-    res.send('Database has been set')
+router.get('/admin', authenticate, isAdmin, async (req, res) => {
+    res.send('Admin endpoint')
 })
 
 module.exports = router
