@@ -1,4 +1,5 @@
 const level = require('level')
+const shortid = require('shortid')
 
 const database = {
     'users': level('./database/db/UsersDB', { valueEncoding: 'json' }),
