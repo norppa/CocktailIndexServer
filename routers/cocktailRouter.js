@@ -13,8 +13,8 @@ router.get('/', authenticate, async (req, res) => {
 router.post('/', authenticate, async (req, res) => {
     const cocktail = req.body
     cocktail.owner = req.user.username
-    await cocktails.put(cocktail)
-    res.status(200).send()
+    const stored = await cocktails.put(cocktail)
+    res.status(200).json(stored)
 })
 
 // Delete cocktail

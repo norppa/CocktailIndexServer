@@ -46,7 +46,7 @@ const getCocktail = async (username, key) => {
     if (!key) {
         return getCocktails(username)
     } else {
-        const cocktail =  await database.cocktails.get(key)
+        const cocktail = await database.cocktails.get(key)
         if (cocktail.owner === username) {
             return cocktail
         } else {
@@ -84,7 +84,8 @@ const putCocktail = async (cocktail) => {
     }
 
     const key = cocktail.id ? cocktail.id : shortid.generate()
-    database.cocktails.put(key, objectToSave)
+    await database.cocktails.put(key, objectToSave)
+    return { key, value: objectToSave }
 }
 
 const delCocktail = (key) => {
