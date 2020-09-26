@@ -1,9 +1,10 @@
 const level = require('level')
 const shortid = require('shortid')
+const path = require('path')
 
 const database = {
-    'users': level('./database/db/UsersDB', { valueEncoding: 'json' }),
-    'cocktails': level('./database/db/CocktailDB', { valueEncoding: 'json' })
+    'users': level(path.join(__dirname, './db/UsersDB'), { valueEncoding: 'json' }),
+    'cocktails': level(path.join(__dirname, './db/CocktailDB'), { valueEncoding: 'json' })
 }
 
 const getUser = async (username) => {
